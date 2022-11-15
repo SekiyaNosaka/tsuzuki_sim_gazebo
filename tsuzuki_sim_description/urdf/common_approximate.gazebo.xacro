@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <gazebo>
+    <plugin name="ros_control" filename="libgazebo_ros_control.so">
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <!-- setup pedestal related -->
+  <gazebo reference="pedestal_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <!-- setup ensenso_n35 related -->
+  <gazebo reference="N35_mounting_frame">
+    <material>Gazebo/SkyBlue</material>
+  </gazebo>
+  <gazebo reference="N35_left_lens_frame"> <!-- N35_mounting_frame -->
+    <sensor type="depth" name="n35">
+        <always_on>true</always_on>
+        <update_rate>10.0</update_rate>
+        <camera>
+          <!-- In the gazebo camera plugin, X-axis is set to the front of the camera by default. -->
+          <pose>0. 0. 0.  0. -1.57079632679 1.57079632679</pose>
+          <horizontal_fov>0.801812880108</horizontal_fov> <!-- default: 1.04666667 -->
+          <image>
+            <!-- image format_type select from
+                 (L8/R8G8B8/B8G8R8/BAYER_RGGB8/BAYER_BGGR8/BAYER_GBRG8/BAYER_GRBG8) -->
+            <format>L8</format>
+            <width>1280</width>
+            <height>1024</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>3.0</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </camera>
+        <plugin name="ensenso_n35_controller" filename="libgazebo_ros_openni_kinect.so">
+          <cameraName>n35</cameraName>
+          <baseline>0.1</baseline>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>10</updateRate>
+          <frameName>N35_left_lens_frame</frameName> <!--N35_mounting_frame-->
+          <imageTopicName>/n35/color/image_raw</imageTopicName>
+          <cameraInfoTopicName>/n35/color/camera_info</cameraInfoTopicName>
+          <depthImageTopicName>/n35/depth/image_raw</depthImageTopicName>
+          <depthImageCameraInfoTopicName>/n35/depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>/n35/depth/points</pointCloudTopicName>
+          <pointCloudCutoff>0.4</pointCloudCutoff>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <CxPrime>0</CxPrime>
+          <Cx>499.077</Cx> <!-- default: 0 -->
+          <Cy>511.474</Cy> <!-- default: 0 -->
+          <focalLength>1509.92479709</focalLength> <!-- default: 0 -->
+          <hackBaseline>0</hackBaseline>
+        </plugin>
+      </sensor>
+  </gazebo>
+
+  <!-- setup fingers related -->
+  <gazebo reference="robotiq_85_left_finger_tip_link">
+    <!--mu1>1000000.0</mu1>
+    <mu2>10.0</mu2-->
+    <!--kp>10000.0</kp>
+    <kd>1.0</kd>
+    <minDepth>0.001</minDepth-->
+    <!--selfCollide>true</selfCollide-->
+  </gazebo>
+  <gazebo reference="robotiq_85_right_finger_tip_link">
+    <!--mu1>1000000.0</mu1>
+    <mu2>10.0</mu2-->
+    <!--kp>10000.0</kp>
+    <kd>1.0</kd>
+    <minDepth>0.001</minDepth-->
+    <!--selfCollide>true</selfCollide-->
+  </gazebo>
+
+  <gazebo reference="tsuzuki_left_finger_tip_link">
+    <mu1>1000000.0</mu1>
+    <mu2>10.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.001</maxVel>
+    <dampingFactor>0.02</dampingFactor>
+    <material>Gazebo/Grey</material>
+    <!--selfCollide>true</selfCollide-->
+    <sensor name="contact_left" type="contact">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <contact>
+        <collision>tsuzuki_left_finger_tip_link_collision</collision>
+      </contact>
+      <plugin name="left_finger_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>10</updateRate>
+        <bumperTopicName>/contact_detect_left</bumperTopicName>
+        <frameName>world</frameName>
+        <!--frameName>tsuzuki_left_finger_tip_link</frameName-->
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="tsuzuki_right_finger_tip_link">
+    <mu1>1000000.0</mu1>
+    <mu2>10.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.001</maxVel>
+    <dampingFactor>0.02</dampingFactor>
+    <material>Gazebo/Grey</material>
+    <!--selfCollide>true</selfCollide-->
+    <sensor name="contact_right" type="contact">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <contact>
+        <collision>tsuzuki_right_finger_tip_link_collision</collision>
+      </contact>
+      <plugin name="right_finger_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>10</updateRate>
+        <bumperTopicName>/contact_detect_right</bumperTopicName>
+        <frameName>world</frameName>
+        <!--frameName>tsuzuki_right_finger_tip_link</frameName-->
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="robotiq_85_left_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <fudgeFactor>0.0</fudgeFactor>
+  </gazebo>
+
+  <gazebo reference="robotiq_85_right_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <fudgeFactor>0.0</fudgeFactor>
+  </gazebo>
+
+  <gazebo reference="robotiq_85_left_inner_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <fudgeFactor>0.0</fudgeFactor>
+  </gazebo>
+
+  <gazebo reference="robotiq_85_right_inner_knuckle_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <fudgeFactor>0.0</fudgeFactor>
+  </gazebo>
+
+  <gazebo reference="robotiq_85_left_finger_tip_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <fudgeFactor>0.0</fudgeFactor>
+  </gazebo>
+
+  <gazebo reference="robotiq_85_right_finger_tip_joint">
+    <implicitSpringDamper>true</implicitSpringDamper>
+    <fudgeFactor>0.0</fudgeFactor>
+  </gazebo>
+
+  <!-- setup robotiq_coupler related -->
+  <gazebo reference="robotiq_coupler">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <material>Gazebo/FlatBlack</material>
+    <!--selfCollide>true</selfCollide-->
+  </gazebo>
+
+  <!-- Gazebo FT sensor plugin -->
+  <!--gazebo reference="wrist_3_joint">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin name="ft_sensor_plugin" filename="libgazebo_ros_ft_sensor.so">
+      <updateRate>250.0</updateRate>
+      <gaussianNoise>0.0</gaussianNoise>
+      <jointName>wrist_3_joint</jointName>
+      <topicName>ft_sensor/raw</topicName>
+    </plugin>
+  </gazebo-->
+  
+  <!-- Gazebo grasping plugin -->
+  <!--gazebo>
+    <gripper name="gazebo_gripper">
+      <grasp_check>
+        <attach_steps>2</attach_steps>
+        <detach_steps>2</detach_steps>
+        <min_contact_count>3</min_contact_count>
+      </grasp_check>
+      <palm_link>robotiq_85_base_link</palm_link>
+      <gripper_link>tsuzuki_left_finger_tip_link</gripper_link>
+      <gripper_link>tsuzuki_right_finger_tip_link</gripper_link>
+    </gripper>
+  </gazebo-->
+  <!--gazebo>
+    <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
+       <arm>
+         <arm_name>gazebo_gripper</arm_name>
+         <palm_link>robotiq_85_left_inner_knuckle_link</palm_link>
+         <palm_link>robotiq_85_right_inner_knuckle_link</palm_link>
+         <gripper_link>robotiq_85_left_finger_tip_link</gripper_link>
+         <gripper_link>robotiq_85_right_finger_tip_link</gripper_link>
+       </arm>
+       <forces_angle_tolerance>100</forces_angle_tolerance>
+       <update_rate>4</update_rate>
+       <grip_count_threshold>4</grip_count_threshold>
+       <max_grip_count>8</max_grip_count>
+       <release_tolerance>0.005</release_tolerance>
+       <disable_collisions_on_attach>false</disable_collisions_on_attach>
+       <contact_topic>__default_topic__</contact_topic>
+    </plugin>
+  </gazebo-->
+
+</robot>

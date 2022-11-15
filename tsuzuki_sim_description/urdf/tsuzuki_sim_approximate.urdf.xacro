@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!-- author: nosaka -->
+<robot name="tsuzuki_sim" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+  <!-- common gazebo stuff -->
+  <xacro:include filename="$(find tsuzuki_sim_description)/urdf/common_approximate.gazebo.xacro" />
+
+  <!-- ur5 -->
+  <xacro:include filename="$(find tsuzuki_sim_description)/urdf/ur5.urdf.xacro" />
+  <!-- ensenso_n35 -->
+  <xacro:include filename="$(find tsuzuki_sim_description)/urdf/ensenso_N_Series.xacro" />
+  <!-- robotiq_2F-85 ~tsuzuki_tip ver.~ -->
+  <xacro:include filename="$(find tsuzuki_sim_description)/urdf/robotiq_85_gripper_tsuzuki.urdf.xacro" />
+
+  <!-- Attach the ur5 -->
+  <xacro:ur5_robot prefix="" joint_limited="false"/>
+  <!-- Attach the robotiq_2f-85_gripper -->
+  <xacro:robotiq_85_gripper prefix="" parent="robotiq_coupler" >
+    <origin xyz="0 0 0.184" rpy="0 ${-pi/2} ${pi}"/>
+  </xacro:robotiq_85_gripper> 
+
+  <link name="world"/>
+
+  <!-- setup robot's pedestal -->
+  <link name="pedestal_link">
+    <visual>
+      <origin xyz="0 0 0.2775" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.1" length="0.555" />
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 0" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.2775" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.1" length="0.555" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0.2775" rpy="0 0 0" />
+      <mass value="20" />
+      <inertia ixx="200" ixy="200" ixz="200"
+               iyy="200" iyz="200" izz="200" />
+    </inertial>
+  </link>
+
+  <joint name="pedestal_joint" type="fixed">
+    <parent link="world" />
+    <child link="pedestal_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="pedestal_link" />
+    <child link="base_link" />
+    <origin xyz="0.0 0.0 0.555" rpy="0.0 0.0 ${-pi/4.0}" />
+  </joint>
+
+  <!-- setup ensenso_n35 -->
+  <joint name="ensenso_joint" type="fixed">
+    <parent link="world" />
+    <child link="ensenso_world" />
+    <!--origin xyz="0.56 -0.035 1.605" rpy="${-pi} 0.0 ${pi/2.0}" /-->
+    <origin xyz="0.56 0.0 1.65" rpy="${-pi} 0.0 ${pi/2.0}" />
+  </joint>
+
+  <!-- setup robotiq_coupler -->
+  <!--  + Height added by the coupler: 8mm
+        + Reference frame: at the middle (4mm) -->
+  <link name="robotiq_coupler">
+    <visual>
+      <geometry>
+        <mesh filename="package://tsuzuki_sim_description/meshes/robotiq_85_gripper/robotiq_85_coupler.stl" />
+      </geometry>
+      <material name="flat_black">
+        <color rgba="0.2 0.2 0.2 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://tsuzuki_sim_description/meshes/robotiq_85_gripper/robotiq_85_coupler.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="2.073e-05   1.45286e-03  -1.1049e-03" rpy="0 0 0" />
+      <mass value="0.168" />
+      <inertia ixx="6.69695624e-05" ixy="5.21511788e-09" ixz="-2.74383009e-08" 
+               iyy="7.85088161e-05" iyz="5.41105193e-07" izz="1.41819717e-04"/>
+    </inertial>
+  </link>
+
+  <joint name="robotiq_coupler_joint" type="fixed">
+    <!--origin xyz="0 0 0.008" rpy="0 0 ${-pi/2.0}" /-->
+    <origin xyz="0 0 0.005" rpy="0 0 ${-pi/2.0}" />
+    <parent link="tool0"/>
+    <child link="robotiq_coupler"/>
+  </joint>
+  
+ 
+</robot>

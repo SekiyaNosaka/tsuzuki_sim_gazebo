@@ -1,0 +1,81 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="tsuzuki_world">
+    <scene>
+      <shadows>true</shadows>
+      <ambient>.1 .1 .1 1</ambient>
+    </scene>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <name>container</name>
+      <uri>model://container</uri>
+      <pose>0.55 0. 0.195 0. 0. 0.</pose>
+      <static>true</static>
+    </include>
+
+    <light name='pt_0' type='point'>
+        <pose>1.5 -1.5 2.75 0 0 0</pose>
+      <diffuse>85 85 85 255</diffuse>
+      <specular>0.02 0.02 0.02 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='pt_1' type='point'>
+      <pose>1.5 1.5 2.75 0 0 0</pose>
+      <diffuse>85 85 85 255</diffuse>
+      <specular>0.02 0.02 0.02 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='pt_2' type='point'>
+      <pose>-1.5 1.5 2.75 0 0 0</pose>
+      <diffuse>85 85 85 255</diffuse>
+      <specular>0.02 0.02 0.02 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='pt_3' type='point'>
+      <pose>-1.5 -1.5 2.75 0 0 0</pose>
+      <diffuse>85 85 85 255</diffuse>
+      <specular>0.02 0.02 0.02 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+  </world>
+</sdf>

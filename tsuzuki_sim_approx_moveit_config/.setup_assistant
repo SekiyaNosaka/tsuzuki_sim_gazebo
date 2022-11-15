@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: tsuzuki_sim_description
+    relative_path: urdf/tsuzuki_sim_approximate.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/tsuzuki_sim.srdf
+  CONFIG:
+    author_name: SekiyaNosaka
+    author_email: c6100188@planet.kanazawa-it.ac.jp
+    generated_timestamp: 1666166684
